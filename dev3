@@ -1,0 +1,97 @@
+# Marc-Antoine Lauzier, Dominick Basque-Morin, Francis Roy-Chouinard
+# 3 décembre 2021
+
+# This program searches from the end of an array to find a specific value
+# the output corresponds to the index in the array where the value is found.
+# Since we start from the end of the array, the index values are between -1 and -10,
+# -1 being the last element of the array and -10 being the first.
+
+
+# This loop charges the values in the array of size 10
+inloop	IN
+stoloop	STO	TAB
+	
+	# increment i
+	LDA	i
+	ADD	one
+	STO	i
+	
+	# test if all values stored in array
+	LDA	i
+	SUB	size
+	BRZ	resetI
+
+	# point to the nezt element of array to store value
+	LDA	stoloop
+	ADD	one
+	STO	stoloop
+	BR	inloop
+
+# Reset the value of i to 0 so that it can be reused in the search loop
+resetI
+	LDA	zero
+	STO	i
+
+	# input the value to be searched in array
+	IN
+	STO search
+
+# initialize pointer at the end of array
+arrayInit
+	LDA	findInstruction	
+	ADD	size
+	SUB	one
+	STO	findInstruction	
+
+# loop that searches for the value in the array
+findInstruction
+	# test if array equals searched value
+	LDA	TAB
+	SUB	search
+	BRZ	valueFound
+
+	# increment index
+	LDA	i
+	ADD	one
+	STO	i
+
+	# check if passed through all values
+	LDA	size
+	SUB	i
+	BRZ	valueNotFound
+
+# go to the previous element in the array
+decrementArray
+	LDA	findInstruction	
+	SUB	one
+	STO	findInstruction	
+	BR	findInstruction
+
+# output negative index and end program
+valueFound
+	SUB	i
+	SUB	one
+	OUT
+	BR	end
+
+# output -11 and end program
+valueNotFound
+	SUB	i
+	SUB	one
+	OUT
+	
+end
+	HLT			# terminate
+
+
+# constants
+one	DAT	1
+size	DAT	10
+zero	DAT	0
+search			# value to search in array
+
+# variables
+i	DAT	0
+
+TAB			# array of values of size 10
+	
